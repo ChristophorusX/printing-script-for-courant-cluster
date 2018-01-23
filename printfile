@@ -1,0 +1,38 @@
+#!/usr/local/bin/bash
+
+while [[ $# -gt 0 ]]; do
+    WORD="$1"
+
+    case $WORD in
+        -s|--single)
+            SINGLE=YES
+        ;;
+        -p|--printer)
+            PRINTERNAME="$2"
+            shift
+        ;;
+        *)
+            FILENAME="$1"
+        ;;
+    esac
+    shift
+done
+
+if [[ -n $SINGLE ]]; then
+    if [[ -n $PRINTERNAME ]]; then
+        lpr -P "\"$PRINTERNAME\"" -o job-sheets=none -o sides=one-sided "\"$FILENAME\""
+        echo "[INFO]File $FILENAME has been printed with single sided to printer ${PRINTERNAME}."
+    else
+        lpr -P mf-06 -o job-sheets=none -o sides=one-sided "\"$FILENAME\""
+        echo "[INFO]File $FILENAME has been printed with single sided to printer mf-06."
+    fi
+else
+    if [[ -n $PRINTERNAME ]]; then
+        lpr -P "\"$PRINTERNAME\"" -o job-sheets=none -o sides=two-sided "\"$FILENAME\""
+        echo "[INFO]File $FILENAME has been printed with double sided to printer ${PRINTERNAME}."
+    else
+        lpr -P mf-06 -o job-sheets=none -o sides=two-sided "\"$FILENAME\""
+        echo "[INFO]File $FILENAME has been printed with double sided to printer mf-06."
+    fi
+fi
+
